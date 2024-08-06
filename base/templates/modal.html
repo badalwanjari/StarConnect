@@ -1,0 +1,77 @@
+<div
+    class="modal fade"
+    id="modal-{{campaign.id}}"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div
+            class="card p-3 modal-content"
+            style="width: 60rem; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <div class="d-flex justify-content-center">
+                <img
+                    src="https://cached.imagescaler.hbpl.co.uk/resize/scaleHeight/815/cached.offlinehbpl.hbpl.co.uk/news/OMC/campaigndigital2amended.jpg"
+                    class="card-img-top"
+                    alt="..."
+                    style="width: 400px; aspect-ratio: auto"
+                />
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{campaign.title}}</h5>
+                <p class="card-text" style="height: auto; text-align: left">
+                    {{campaign.description}}
+                </p>
+                <ul class="list-group list-group-flush py-2">
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center"
+                    >
+                        {{sponsor.sponsor_name}}
+                    </li>
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center fs-5"
+                    >
+                        <span class="badge bg-info">{{sponsor.industry}}</span>
+                        <span class="badge bg-success">active</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center align-items-center"
+                    >
+                        <span class="text-muted">Budget:&nbsp;</span
+                        ><span class="display-6" style="font-size: 1.36rem"
+                            >Rs. {{campaign.budget}}</span
+                        >
+                    </li>
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center"
+                    >
+                        <span class="text-muted">Target Audience:&nbsp;</span
+                        >{{campaign.target_audience}}
+                    </li>
+
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center"
+                    >
+                        <span class="text-muted">Start date:&nbsp;</span
+                        >{{campaign.start_date}}
+                    </li>
+                    <li
+                        class="list-group-item d-flex gap-1 justify-content-center"
+                    >
+                        <span class="text-muted">End date:&nbsp;</span
+                        >{{campaign.end_date}}
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a
+                    href="{{ url_for('make_request', campaign_id=campaign.id, influencer_id=current_user.influencer.id ) }}"
+                    class="btn btn-primary"
+                    >Make Request</a
+                >
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

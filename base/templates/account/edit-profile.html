@@ -1,0 +1,205 @@
+{% extends "base.html" %} {% block title %} Blog Lite - Edit Profile {% endblock
+title %} {% block blog %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8 col-xl-6 text-center mx-auto">
+            <p class="fw-bold text-success mb-2" align="center">
+                <i class="fas fa-user-plus"></i>
+                <br />
+                Update Profile
+                <br />
+            </p>
+            <h2 class="fw-bold">We require more information about you</h2>
+        </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div
+                    class="card-body text-center d-flex flex-column align-items-center"
+                >
+                    <div
+                        class="bs-icon-xl bs-icon-circle bs-icon-primary shadow bs-icon my-4"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            fill="currentColor"
+                            viewBox="0 0 16 16"
+                            class="bi bi-person"
+                        >
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"
+                            ></path>
+                        </svg>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="d-flex justify-content-center gap-2">
+                            <div class="col-md-6">
+                                {{ form.hidden_tag() }}
+                                <div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.username.errors %} {{
+                                        form.username(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.username.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.username(class="form-control") }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+								<div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.name.errors %} {{
+                                        form.name(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.name.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.name(class="form-control") }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.email.errors %} {{
+                                        form.email(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.email.errors %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.email(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.picture.errors %} {{
+                                        form.picture(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.picture.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.picture(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+								<div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.category.errors %} {{
+                                        form.category(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.category.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.category(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+								<div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.niche.errors %} {{
+                                        form.niche(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.niche.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.niche(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+								<div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.profile_url.errors %} {{
+                                        form.profile_url(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.profile_url.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.profile_url(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+
+								<div class="mb-3">
+                                    <div class="form-group">
+                                        {% if form.reach.errors %} {{
+                                        form.reach(class="form-control
+                                        is-invalid") }}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.reach.errors
+                                            %}
+                                            <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %} {{
+                                        form.reach(class="form-control") }} {%
+                                        endif %}
+                                    </div>
+                                </div>
+							</div>
+                        </div>
+
+						<div class="mb-3">
+							<div class="form-group">
+								{% if form.reach.errors %} {{
+								form.reach(class="form-control
+								is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in form.reach.errors
+									%}
+									<span>{{ error }}</span>
+									{% endfor %}
+								</div>
+								{% else %} {{
+								form.bio(class="form-control") }} {%
+								endif %}
+							</div>
+						</div>
+
+						<div class="mb-3">
+							
+							{{ form.submit(class="btn btn-primary") }}
+						</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock blog %}

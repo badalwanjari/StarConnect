@@ -1,0 +1,145 @@
+{% extends 'base.html' %} {% block blog %}
+<section class="container py-5">
+    <div class="container pe-xl-0 ps-xl-0">
+        <h1
+            class="fw-bold text-center ps-0 pb-0 mb-0 ps-md-0 pe-lg-0"
+            style="font-size: 40px; text-align: center"
+        >
+            <img
+                class="rounded-circle"
+                style="
+                    width: 16%;
+                    aspect-ratio: 1;
+                    margin: 10px;
+                    object-fit: cover;
+                "
+                src="{{ image_file }}"
+            />
+            <br />
+        </h1>
+        <h1
+            class="fw-bold text-center py-2 ps-0 pb-0 mb-0 ps-md-0 pe-lg-0"
+            style="font-size: 40px; text-align: center"
+        >
+            <span
+                style="
+                    background: -webkit-linear-gradient(
+                        45deg,
+                        rgba(64, 93, 230, 1),
+                        rgba(88, 81, 219, 1),
+                        rgba(131, 58, 180, 1),
+                        rgba(193, 53, 132, 1),
+                        rgba(225, 48, 108, 1),
+                        rgba(253, 29, 29, 1)
+                    );
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                "
+            >
+                {{ current_user.influencer.influencer_name }}
+            </span>
+        </h1>
+		<p><span class="text-muted fs-4">{{current_user.username}}</span></p>
+        
+        <br />
+        <blockquote
+                class="blockquote text-center"
+                style="
+                    color: auto;
+                    max-width: 60%;
+                    border-radius: 25px;
+                    padding: 16px 24px;
+                    text-shadow: #ffffff 1px 0px 20px;
+                "
+            >
+                <i> {{ current_user.influencer.bio }} </i>
+            </blockquote>
+        <div class="col-md-12 mb-4" style="display: grid; grid-template-columns: 1fr 1fr 1fr;column-gap: 1rem;row-gap: 2rem; place-items: center;"> 
+			<div class="m-1 col-md-12 col-sm-12">
+				<div class="mb-2">
+					<label class="text-muted">
+						Email
+					</label>
+					<p class="text-center fs-3"><a href="mailto:{{current_user.email}}" target="_blank">{{current_user.email}}</a></p>
+				</div>
+			</div>
+			<div class="m-1 col-md-12 col-sm-12">
+				<div class="mb-2">
+					<label class="text-muted">
+						Category
+					</label>
+					<p class="text-center fs-3">{{current_user.influencer.category}}</p>
+				</div>
+			</div>
+			<div class="m-1 col-md-12 col-sm-12">
+				<div class="mb-2">
+					<label class="text-muted">
+						Niche
+					</label>
+					<p class="text-center fs-3">{{current_user.influencer.niche}}</p>
+				</div>
+			</div>
+            <div class="m-1 col-md-12 col-sm-12">
+				<div class="mb-2">
+					<label class="text-muted">
+						Reach
+					</label>
+					<p class="text-center fs-3">{{current_user.influencer.reach}}</p>
+				</div>
+			</div>
+            <div class="m-1 col-md-12 col-sm-12">
+				<div class="mb-2">
+					<label class="text-muted">
+						Profile Url
+					</label>
+					<p class="text-center fs-3"><a target="_blank" href="https://{{current_user.influencer.profile_url}}">{{current_user.influencer.profile_url}}</a></p>
+				</div>
+			</div>
+        </div>
+		
+        <h1
+            class="fw-bold text-center ps-0 pb-0 mb-0 ps-md-0 pe-lg-0"
+            style="font-size: 40px; text-align: center"
+        >
+            <a href="{{ url_for('influencer_account_edit') }}">
+                <button
+                    class="btn btn-info fs-6 fw-light text-center border-0 align-items-center align-content-center align-self-center m-auto pt-xl-1 pb-xl-1 pe-xl-2 ps-xl-2 pt-1 mt-0 pb-0 mb-0 me-0 pe-md-1 pb-md-0 mb-md-0"
+                    type="button"
+                    style="
+                        height: 40px;
+                        width: 120px;
+                        font-size: 1px;
+                        padding: 0px 0px;
+                        text-align: center;
+                    "
+                >
+                    <b> Edit Profile </b>
+                </button>
+            </a>
+            &nbsp;&nbsp;
+            <a href="/logout">
+                <button
+                    class="btn btn-danger fs-6 fw-light text-center border-0 align-items-center align-content-center align-self-center m-auto pt-xl-1 pb-xl-1 pe-xl-2 ps-xl-2 pt-1 mt-0 pb-0 mb-0 me-0 pe-md-1 pb-md-0 mb-md-0"
+                    type="button"
+                    style="
+                        height: 40px;
+                        width: 120px;
+                        font-size: 1px;
+                        padding: 0px 0px;
+                        text-align: center;
+                    "
+                >
+                    <b> Log Out </b>
+                </button>
+            </a>
+            <br />
+        </h1>
+        <h1
+            class="fw-bold text-center ps-0 pb-0 mb-0 ps-md-0 pe-lg-0"
+            style="font-size: 40px; text-align: center"
+        >
+            <br />
+        </h1>
+    </div>
+</section>
+{% endblock %}

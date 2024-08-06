@@ -1,0 +1,188 @@
+{% extends 'base.html' %} {% block blog %}
+<style>
+    #myModal {
+        display: none;
+        position: fixed;
+        z-index: 999999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 600px;
+    }
+</style>
+
+
+<div
+    class="h-100 my-4 mx-auto"
+    style="
+        width: 100%;
+    "
+>
+    <div
+        class="card"
+        style="width: 65%; margin-inline: auto; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+
+    <div class="card-body p-5">
+        <h3 class="card-title">Create Campaign</h3>
+        <form class="form" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.title.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.title.errors %} 
+                        {{ form.title(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.title(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.target_audience.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.target_audience.errors %} 
+                        {{ form.target_audience(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.target_audience.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.target_audience(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.budget.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.budget.errors %} 
+                        {{ form.budget(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.budget.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.budget(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.start_date.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.start_date.errors %} 
+                        {{ form.start_date(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.start_date.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.start_date(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.end_date.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.end_date.errors %} 
+                        {{ form.end_date(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.end_date.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.end_date(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.picture.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.picture.errors %} 
+                        {{ form.picture(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.picture.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.picture(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3" style="text-align: left !important;">
+                {{ form.description.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
+                <div class="form-group">
+                    {% if form.description.errors %} 
+                        {{ form.description(class="form-control is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %} 
+                        {{ form.description(class="form-control") }} 
+                    {% endif%}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check d-flex gap-2 justify-content-center">
+                    {{ form.is_disabled(class="form-check-input")}} 
+                    {{form.is_disabled.label(class="form-check-label")}}
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+
+    </div>
+
+
+    
+</div>
+<script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+></script>
+{% endblock %}

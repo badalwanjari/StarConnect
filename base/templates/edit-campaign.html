@@ -24,12 +24,12 @@
     }
 </style>
 
-<div class="h-100 my-4 d-flex justify-content-center gap-4" style="width: 100%">
+<div class="h-100 my-4 gap-4 row" style="width: 80%;display: grid; grid-template-columns: 1fr 1fr;margin-inline: auto;">
     <div
-        class="card"
-        style="width: 50%; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        class="card w-100"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-inline: auto;"
     >
-        <div class="card-body p-5">
+        <div class="card-body p-5" >
             <h3 class="card-title">Campaign</h3>
             <form class="form" method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
@@ -148,7 +148,7 @@
                 <div class="mb-3">
                     <div class="form-check d-flex gap-2 justify-content-center">
                         {{ form.is_disabled(class="form-check-input")}}
-                        {{form.is_disabled.label(class="form-check-label")}}
+                        {{ form.is_disabled.label(class="form-check-label")}}
                     </div>
                 </div>
 
@@ -159,82 +159,127 @@
         </div>
     </div>
 
-    <div
-        class="card py-5"
-        style="width: 30%; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
-    >
-        <div class="card-body p-3">
-            <h3 class="card-title">Influencers</h3>
-            <div>
-                <div class="mb-5">
-                    <h6>Assigned</h6>
-                    <table class="table table-hover w-100">
-                        <tr class="col-md-12">
-                            <th class="col-md-6">Name</th>
-                            <th class="col-md-3">To Pay</th>
-                            <th class="col-md-3 text-center">Action</th>
-                        </tr>
+    <div class="w-full">
+        <div
+            class="card mb-2 p-3 w-100"
+            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <h3 class="card-title">Total Expenditure</h3>
+            <p class="display-4">{{expenditure}}</p>
+        </div>
 
-                        <!-- For loop -->
-                        {% for item in campaign_contracts %}
-                        <tr class="col-md-12">
-                            <td class="col-md-6">{{item.influencer.influencer_name}}</td>
-                            <td class="col-md-3">{{item.contract.budget}}</td>
-                            <td class="col-md-3">
-                                <a
-                                    href="{{ url_for('delete_contract', campaign_id=item.contract.campaign_id, influencer_id=item.contract.influencer_id) }}"
-                                >
-                                    <button class="btn btn-sm btn-danger">
-                                        Delete
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
+        <div
+            class="card mb-2 p-3 w-100"
+            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <h3 class="card-title">Assigned</h3>
+            <table class="table table-hover w-100">
+                <tr class="col-md-12">
+                    <th class="col-md-6">Name</th>
+                    <th class="col-md-3">To Pay</th>
+                    <th class="col-md-3 text-center">Action</th>
+                </tr>
 
-                        
-                    </table>
-                </div>
-                <div>
-                    <h6>Requests</h6>
-                    <table class="table table-hover w-100">
-                        <tr class="col-md-12">
-                            <th class="col-md-6">Name</th>
-                            <th class="col-md-3 text-center">Action</th>
-                            <th class="col-md-3 text-center">Action</th>
-                        </tr>
+                <!-- For loop -->
+                {% for item in campaign_contracts %}
+                <tr class="col-md-12">
+                    <td class="col-md-6">
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >{{item.influencer.influencer_name}}</a
+                        >
+                    </td>
+                    <td class="col-md-3">
+                        {{item.contract.budget}}
+                    </td>
+                    <td class="col-md-3">
+                        <a
+                            href="{{ url_for('delete_contract', campaign_id=item.contract.campaign_id, influencer_id=item.contract.influencer_id) }}"
+                        >
+                            <button class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
-                        <!-- For loop -->
-                        {% for item in campaign_reqs %}
 
-                        <tr>
-                            <td class="col-md-6">
-                                {{item.influencer.influencer_name}}
-                            </td>
-                            <td class="col-md-3">
-                                <a
-                                    href="{{ url_for('make_contract', campaign_id=item.request.campaign_id, campaign_request_id=item.request.id) }}"
-                                >
-                                    <button class="btn btn-sm btn-success">
-                                        Accept
-                                    </button>
-                                </a>
-                            </td>
-                            <td class="col-md-3">
-                                <a
-                                    href="{{ url_for('delete_request', campaign_id=item.request.campaign_id, influencer_id=item.request.influencer_id) }}"
-                                >
-                                    <button class="btn btn-sm btn-danger">
-                                        Delete
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
+        <div
+            class="card mb-2 py-5 p-3 w-100"
+            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <h3 class="card-title">Requests</h3>
+            <table class="table table-hover w-100">
+                <tr class="col-md-12">
+                    <th class="col-md-6">Name</th>
+                    <th class="col-md-3 text-center">Action</th>
+                    <th class="col-md-3 text-center">Action</th>
+                </tr>
 
-                        {% endfor %}
-                    </table>
-                </div>
-            </div>
+                <!-- For loop -->
+                {% for item in campaign_reqs %}
+
+                <tr>
+                    <td class="col-md-6">
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >{{item.influencer.influencer_name}}</a
+                        >
+                    </td>
+                    <td class="col-md-3">
+                        <a
+                            href="{{ url_for('make_contract', campaign_id=item.request.campaign_id, campaign_request_id=item.request.id) }}"
+                        >
+                            <button class="btn btn-sm btn-success">
+                                Accept
+                            </button>
+                        </a>
+                    </td>
+                    <td class="col-md-3">
+                        <a
+                            href="{{ url_for('delete_request', campaign_id=item.request.campaign_id, influencer_id=item.request.influencer_id) }}"
+                        >
+                            <button class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </table>
+        </div>
+
+
+        <div
+            class="card mb-2 py-5 p-3 w-100"
+            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <h3 class="card-title">Deleted</h3>
+            <table class="table table-hover w-100">
+                <tr class="col-md-12">
+                    <th class="col-md-6">Name</th>
+                    <th class="col-md-3 text-center">Total = {{deleted_contracts|length}}</th>
+                </tr>
+
+                <!-- For loop -->
+                {% for item in deleted_contracts %}
+                    <tr>
+                    <td class="col-md-6">
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >{{item.influencer.influencer_name}}</a
+                        >
+                    </td>
+                    <td class="col-md-3">
+                        {{item.contract.budget}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </div>
 </div>

@@ -14,12 +14,12 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     sponsor = db.relationship('Sponsor', backref='sponsor', uselist=False)
-    influencer = db.relationship('Influencer', backref='influencer', uselist=False)
+    influencer = db.relationship('Influencer', backref='influencer', uselist=False, cascade = "all,delete")
     is_disabled = db.Column(db.Boolean, default=True)
     role = db.Column(db.String(), default="INFLUENCER")
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.username}', '{self.email}', '{self.username}')"
     
 
 
@@ -96,7 +96,7 @@ class Contract(db.Model):
     influencer_id = db.Column(db.Integer, db.ForeignKey('influencer.id'))
     budget = db.Column(db.Integer)
     reach = db.Column(db.Integer)
-    # deletedby_influencer = db.Column(db.Boolean, default=False)
-    # deletedby_sponsor = db.Column(db.Boolean, default=False)
+    is_deleted = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    deleted_at = db.Column(db.DateTime, nullable=False, default=datetime.now())
     

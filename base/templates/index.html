@@ -24,6 +24,8 @@
     }
 </style>
 
+{% if campaigns|length != 0 %}
+
 <div
     class="h-100 my-4 mx-auto"
     style="
@@ -75,6 +77,8 @@
                     <span class="badge bg-warning">inactive</span>
                     {% else %}
                     <span class="badge bg-success">active</span>
+                    {% endif %} {% if campaign.is_flagged %}
+                    <span class="badge bg-warning">flagged</span>
                     {% endif %}
                 </li>
                 <li
@@ -101,13 +105,13 @@
             >
 
             {% else %}
-                <a
-                    href="#"
-                    class="btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#modal-{{campaign.id}}"
-                    >View</a
-                >
+            <a
+                href="#"
+                class="btn btn-primary"
+                data-toggle="modal"
+                data-target="#modal-{{campaign.id}}"
+                >View</a
+            >
             {% endif %}
 
             <!-- MODALLLLLLLL -->
@@ -116,6 +120,9 @@
     </div>
     {% endfor %}
 </div>
+{% else %}
+<p class="text-center display-3 mt-5">No campaigns for now!</p>
+{% endif %}
 <script
     src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

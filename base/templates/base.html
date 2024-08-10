@@ -120,7 +120,7 @@
 		</div>
 	</nav>
 <!-- 	<br> -->
-	<div class='container text-center' style='width: 60%;'>
+	<div class='container text-center' style='width: 50%;position: absolute; top:5rem; left: 50%; transform: translateX(-50%);z-index: 100000000;'>
 		{% with messages = get_flashed_messages(with_categories = true) %}
 			{% if messages %}
 				{% for category, message in messages %}

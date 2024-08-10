@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import secrets
 from PIL import Image
@@ -44,7 +45,13 @@ def save_picture(form_picture, folder_name):
 @app.route("/home")
 def home():
     campaigns = []
-    query_campaigns = Campaign.query.all()
+    query_campaigns = None
+
+    if current_user.is_authenticated and current_user.role == "SPONSOR":
+        query_campaigns = Campaign.query.filter_by(sponsor_id=current_user.sponsor.id)
+    else:
+        query_campaigns = Campaign.query.filter_by(is_disabled=False)
+    
     for campaign in query_campaigns:
         campaigns.append({"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})
     print(campaigns)
@@ -236,6 +243,7 @@ def profile(id):
 def create_campaign():
     if current_user.role != "SPONSOR":
         return redirect(url_for('home'))
+    
     form = CampaignRegistrationForm()
     if form.validate_on_submit():
         campaign = Campaign(
@@ -257,6 +265,7 @@ def create_campaign():
 
         flash('Campaign has been created!', 'success')
         return redirect(url_for('home'))
+    
 
     return render_template('create-campaign.html', title='About', form=form)
 
@@ -303,24 +312,29 @@ def edit_compaign(campaign_id):
     #Building requests
     campaign_reqs = []
     for req in campaign.influencer_requests:
-        # if req.deletedby_influencer or req.deletedby_sponsor: continue
         campaign_reqs.append({"influencer": Influencer.query.filter_by(id=req.influencer_id).first(), "request":req})
 
     #Contracts
+    expenditure = 0
+    deleted_contracts = []
     campaign_contracts = []
     for contract in campaign.influencer_contracts:
+        expenditure += contract.budget
+        if contract.is_deleted:
+            deleted_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
+            continue
         campaign_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
-
 
     print(f'''
 
+            {campaign_contracts}
 
-        {campaign_contracts}
 
+            {deleted_contracts}
 
-        ''')
+          ''')
 
-    return render_template('edit-campaign.html', title='About', form=form, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts)
+    return render_template('edit-campaign.html', title='About', form=form, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
 
 
 
@@ -339,7 +353,7 @@ def make_request(campaign_id, influencer_id):
         db.session.add(req)
         db.session.commit()
     else:
-        contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
+        contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
         if contract is None:
             flash("Pending request", "warning")
         else:
@@ -371,7 +385,7 @@ def make_contract(campaign_id, campaign_request_id):
     campaign = Campaign.query.get(campaign_id)
     campaign_request = CampaignRequest.query.get(campaign_request_id)
     influencer = Influencer.query.get(campaign_request.influencer_id)
-    contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer.id).first()
+    contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer.id, is_deleted=False).first()
 
     if contract is None and not campaign.is_disabled:
         contract = Contract(campaign_id=campaign_id, influencer_id=influencer.id, reach=influencer.reach, budget=campaign.budget)
@@ -389,10 +403,17 @@ def make_contract(campaign_id, campaign_request_id):
 @app.route("/delete-contract/<campaign_id>/<influencer_id>", methods=['GET'])
 @login_required
 def delete_contract(campaign_id, influencer_id):
-    contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
+    contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
+    
+    print("Flag-1", contract.created_at)
+    
     if contract is not None:
-        db.session.delete(contract)
+        print("Flag-1 if")
+        contract.is_deleted = True
+        contract.deleted_at = datetime.now()
         db.session.commit()
-
+    else:
+        print("Flag-1 else")
+        flash("Cannot deleted")
     ref = request.referrer
     return redirect(ref)

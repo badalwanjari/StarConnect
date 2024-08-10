@@ -51,15 +51,15 @@
 								<i class="fa-solid fa-house-chimney"></i>
 							</a>
 						</li>
+						{% if current_user.is_authenticated and current_user.role=="INFLUENCER" %}
 						<li class="nav-item">
 							<a class="nav-link
-								{% block explore %}
-									
-								{% endblock %}
-								" href="/explore">
-								<i class="fa-solid fa-compass"></i>
+							" href="{{url_for('my_contracts')}}">
+								<i class="fa-solid fa-folder-open"></i>
+								</i>
 							</a>
 						</li>
+						{% endif %}
 						<li class="nav-item">
 							<a class="nav-link
 								{% block search %}

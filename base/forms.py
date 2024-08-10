@@ -55,6 +55,11 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data, is_banned=True).first()
+        if user is not None:
+            raise ValidationError("Your account has been banned. Please Contact on contact@engagement.in")
+
 
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username',

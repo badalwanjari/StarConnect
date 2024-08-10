@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     sponsor = db.relationship('Sponsor', backref='sponsor', uselist=False)
     influencer = db.relationship('Influencer', backref='influencer', uselist=False, cascade = "all,delete")
     is_disabled = db.Column(db.Boolean, default=True)
+    is_banned = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(), default="INFLUENCER")
 
     def __repr__(self):
@@ -32,7 +33,8 @@ class Sponsor(db.Model):
     bio = db.Column(db.Text(), nullable=True)
     website = db.Column(db.String(50), default="-")
     image_file = db.Column(db.String(50), nullable=False, default='default-sponsor.jpg')
-    complaigns = db.relationship('Campaign', backref='campaigns', uselist=True)
+    sponsor_campaigns = db.relationship('Campaign', backref='sponsor_campaigns', uselist=True)
+    sponsor_contracts = db.relationship('Contract', backref="sponsor_contracts", uselist=True)
 
     def __repr__(self) -> str:
         return f"Sponser('{self.sponsor_name}', '{self.industry}')"
@@ -50,7 +52,7 @@ class Influencer(db.Model):
     profile_url = db.Column(db.String(100), nullable=True)
     image_file = db.Column(db.String(50), nullable=False, default='default.jpg')
     bio = db.Column(db.Text(), nullable=True)
-    CampaignRequests = db.relationship('CampaignRequest', backref='CampaignRequests', uselist=True)
+    campaign_requests = db.relationship('CampaignRequest', backref='campaign_requests', uselist=True)
     campaign_contracts = db.relationship('Contract', backref='campaign_contracts', uselist=True)
 
     def __repr__(self):
@@ -93,6 +95,7 @@ class CampaignRequest(db.Model):
 class Contract(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'))
+    sponsor_id = db.Column(db.Integer, db.ForeignKey('sponsor.id'))
     influencer_id = db.Column(db.Integer, db.ForeignKey('influencer.id'))
     budget = db.Column(db.Integer)
     reach = db.Column(db.Integer)

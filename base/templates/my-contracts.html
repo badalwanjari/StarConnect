@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block blog %}
+
+<style>
+    td, th{
+        vertical-align: middle;
+        text-align: left;
+    }
+</style>
+
+<div
+        class="mb-2 mx-auto p-3 w-75"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+        <h3 class="my-3">My Campaigns</h3>
+        <table class="table table-hover w-100 text-center">
+            <tr class="col-md-12">
+                <th>Title</th>
+                <th>Budget</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Description</th>
+            </tr>
+
+            <!-- For loop -->
+            {% for contract in contracts %}
+            <tr class="col-md-12">
+                <td>{{contract.title}}</td>
+                <td>{{contract.budget}}</td>
+                <td>{{contract.start_date.strftime('%Y-%m-%d')}}</td>
+                <td>{{contract.end_date.strftime('%Y-%m-%d')}}</td>
+                <td style="max-width: 600px;">{{contract.description}}</td>
+                <td></td>
+            </tr>
+
+            {% endfor %}
+
+            
+        </table>
+    </div>
+
+{% endblock %}

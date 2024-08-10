@@ -8,6 +8,21 @@ from base.create_db import add_data, create_db
 from base.forms import CampaignRegistrationForm, RegistrationForm, LoginForm, InfluencerRegistrationForm, SponsorRegistrationForm
 from base.models import Campaign, Contract, Influencer, CampaignRequest, Sponsor, User
 from flask_login import login_user, current_user, logout_user, login_required
+from functools import wraps
+from flask import abort
+
+
+def role_required(role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                abort(403)  # or redirect to login page
+            if current_user.role != role:
+                abort(403)  # Forbidden
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 ########################################33
 
@@ -239,7 +254,7 @@ def profile(id):
 ###########################################
 
 
-@app.route("/create-compaign", methods=['GET', 'POST'])
+@app.route("/create-campaign", methods=['GET', 'POST'])
 def create_campaign():
     if current_user.role != "SPONSOR":
         return redirect(url_for('home'))
@@ -270,8 +285,8 @@ def create_campaign():
     return render_template('create-campaign.html', title='About', form=form)
 
 
-@app.route("/edit-compaign/<campaign_id>", methods=['GET', 'POST'])
-def edit_compaign(campaign_id):
+@app.route("/edit-campaign/<campaign_id>", methods=['GET', 'POST'])
+def edit_campaign(campaign_id):
     if current_user.role != "SPONSOR":
         return redirect(url_for('home'))
     form = CampaignRegistrationForm()
@@ -324,16 +339,7 @@ def edit_compaign(campaign_id):
             deleted_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
             continue
         campaign_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
-
-    print(f'''
-
-            {campaign_contracts}
-
-
-            {deleted_contracts}
-
-          ''')
-
+        
     return render_template('edit-campaign.html', title='About', form=form, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
 
 
@@ -362,6 +368,8 @@ def make_request(campaign_id, influencer_id):
     return redirect(ref)
 
 
+
+
 @app.route("/delete-request/<campaign_id>/<influencer_id>", methods=['GET'])
 @login_required
 def delete_request(campaign_id, influencer_id):
@@ -372,6 +380,8 @@ def delete_request(campaign_id, influencer_id):
 
     ref = request.referrer
     return redirect(ref)
+
+
 
 
 
@@ -388,7 +398,7 @@ def make_contract(campaign_id, campaign_request_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer.id, is_deleted=False).first()
 
     if contract is None and not campaign.is_disabled:
-        contract = Contract(campaign_id=campaign_id, influencer_id=influencer.id, reach=influencer.reach, budget=campaign.budget)
+        contract = Contract(campaign_id=campaign_id,sponsor_id=campaign.sponsor_id, influencer_id=influencer.id, reach=influencer.reach, budget=campaign.budget)
         db.session.add(contract)
         db.session.delete(campaign_request)
         db.session.commit()
@@ -404,9 +414,7 @@ def make_contract(campaign_id, campaign_request_id):
 @login_required
 def delete_contract(campaign_id, influencer_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
-    
     print("Flag-1", contract.created_at)
-    
     if contract is not None:
         print("Flag-1 if")
         contract.is_deleted = True
@@ -417,3 +425,38 @@ def delete_contract(campaign_id, influencer_id):
         flash("Cannot deleted")
     ref = request.referrer
     return redirect(ref)
+
+
+
+@login_required
+@app.route("/my-campaigns")
+@role_required("INFLUENCER")
+def my_contracts():
+    contracts = (
+        Contract.query
+            .filter_by(
+                influencer_id = current_user.influencer.id
+                )
+            .join(Campaign, Campaign.id==Contract.campaign_id)
+            .add_columns(Campaign.description,
+                         Campaign.start_date,
+                         Campaign.end_date,
+                         Campaign.title,
+                         Contract.budget)
+            .all())
+    return render_template('my-contracts.html', contracts=contracts)
+
+
+
+
+
+
+
+#################################################################33
+##################################################################33
+#                   STATSPAGE
+##################################################################
+#################################################################33
+
+
+

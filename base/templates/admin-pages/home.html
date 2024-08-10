@@ -22,8 +22,10 @@
         width: 80%;
         max-width: 600px;
     }
-    td {
+    td,
+    th {
         vertical-align: middle;
+        text-align: left;
     }
 
     td a,
@@ -31,6 +33,7 @@
     td img {
         vertical-align: middle;
         display: inline-block;
+        /* text-align: left; */
     }
 </style>
 
@@ -39,129 +42,137 @@
     style="
         width: 80%;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         margin-inline: auto;
+        column-gap: 1rem;
+        row-gap: 1rem;
+        grid-auto-flow: row;
     "
 >
-    <div class="w-full">
-        <div
-            class="card mb-2 p-3 w-100"
-            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
-        >
-            <h3 class="card-title">Sponsors</h3>
-            <table class="table table-hover w-100">
-                <tr class="col-md-12">
-                    <th class="col-md-6">Sponsor Name</th>
-                    <th class="col-md-3 text-center">
-                        Total={{sponsors|length}}
-                    </th>
-                </tr>
+    <div
+        class="card mb-2 p-3 w-100"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+        <h3 class="card-title my-3">Sponsors</h3>
+        <table class="table table-hover w-100">
+            <tr class="">
+                <th>Name</th>
+                <th>Email</th>
+                <th>Industry</th>
+                <th>Valuation</th>
+                <th>Contracts</th>
+                <th>Campaigns</th>
+                <th></th>
+            </tr>
 
-                <!-- For loop -->
-                {% for sponsor in sponsors %}
-                <tr class="col-md-12">
-                    <td class="col-md-6">
-                        <a href="{{ url_for('profile', id=sponsor.user_id) }}"
-                            >{{sponsor.sponsor_name}}</a
-                        >
-                    </td>
+            <!-- For loop -->
+            {% for sponsor in sponsors %}
+            <tr class="col-md-12">
+                <td>
+                    <a href="{{ url_for('profile', id=sponsor.user_id) }}"
+                        >{{sponsor.sponsor_name}}</a
+                    >
+                </td>
+                <td>{{sponsor.email}}</td>
+                <td>{{sponsor.industry}}</td>
+                <td>{{sponsor.market_valuation}}</td>
+                <td>{{sponsor.contract_count}}</td>
+                <td>{{sponsor.campaign_count}}</td>
 
-                    <td class="col-md-3">
-                        <a href="">
-                            <button class="btn btn-sm btn-danger">
-                                Delete
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <div
-            class="card mb-2 p-3 w-100"
-            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
-        >
-            <h3 class="card-title">Influencers</h3>
-            <table class="table table-hover w-100">
-                <tr class="col-md-12">
-                    <th class="col-md-6">Influencers Name</th>
-                    <th class="col-md-3 text-center">
-                        Total={{influencers|length}}
-                    </th>
-                </tr>
-
-                <!-- For loop -->
-                {% for influencer in influencers %}
-                <tr class="col-md-12">
-                    <td class="col-md-6">
-                        <a
-                            href="{{ url_for('profile', id=influencer.user_id) }}"
-                            >{{influencer.influencer_name}}</a
-                        >
-                    </td>
-
-                    <td class="col-md-3">
-                        <a href="">
-                            <button class="btn btn-sm btn-danger">
-                                Delete
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+                <td class="" style="text-align: right !important">
+                    <a href="{{ url_for('ban_user', id=sponsor.user_id ) }}">
+                        {% if sponsor.is_banned %}
+                        <button class="btn btn-sm btn-success">Unban</button>
+                        {% else %}
+                        <button class="btn btn-sm btn-danger">Ban</button>
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
-    <div class="w-100">
-        <div
-            class="card mb-2 p-3 w-100"
-            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
-        >
-            <p class="text-center fs-4">Total Expenditure</p>
-            <p class="text-center display-3">{{expenditure}}</p>
-        </div>
 
-        <div
-            class="card mb-2 p-3 w-100"
-            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
-        >
-            <h3 class="card-title">Campaigns</h3>
-            <table class="table table-hover w-100 text-center">
-                <tr class="col-md-12">
-                    <th class="">Name</th>
-                    <th class="text-center">Sponsor</th>
-                    <th class="text-center">Date</th>
-                    <th class="text-center">Flag</th>
-                </tr>
+    <div
+        class="card mb-2 p-3 w-100"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+        <h3 class="card-title my-3">Influencers</h3>
+        <table class="table table-hover w-100">
+            <tr class="col-md-12">
+                <th class="">Name</th>
+                <th>Email</th>
+                <th>Category</th>
+                <th>Reach</th>
+                <th>Contracts</th>
+                <th></th>
+            </tr>
 
-                <!-- For loop -->
-                {% for campaign in campaigns %}
-                <tr class="col-md-12">
-                    <td class="">
-                        <a href="{{ url_for('profile', id=campaign.id) }}"
-                            >{{campaign.title[0:15]}}</a
-                        >
-                    </td>
-                    <td class="">{{campaign.sponsor_name}}</td>
-                    <td class="">
-                        {{campaign.date_posted.strftime('%d-%m-%Y')}}
-                    </td>
-                    <td class="">
-                        <a href="{{ url_for('flag_campaign', id=campaign.id) }}">
-                            {% if campaign.is_flagged %}
-                            <button class="btn btn-sm btn-success">
-                                Unflag
-                            </button>
-                            {% else %}
-                            <button class="btn btn-sm btn-warning">Flag</button>
-                            {% endif %}
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+            <!-- For loop -->
+            {% for influencer in influencers %}
+            <tr class="col-md-12">
+                <td class="">
+                    <a href="{{ url_for('profile', id=influencer.user_id) }}"
+                        >{{influencer.influencer_name}}</a
+                    >
+                </td>
+                <td class="">{{influencer.email}}</td>
+                <td class="">{{influencer.category}}</td>
+                <td class="">{{influencer.reach}}</td>
+                <td class="">{{influencer.contract_count}}</td>
+                <td style="text-align: right !important">
+                    <a href="{{ url_for('ban_user', id=influencer.user_id ) }}">
+                        {% if influencer.is_banned %}
+                        <button class="btn btn-sm btn-success">Unban</button>
+                        {% else %}
+                        <button class="btn btn-sm btn-danger">Ban</button>
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div
+        class="card mb-2 p-3 w-100"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+        <h3 class="card-title my-3">Campaigns</h3>
+        <table class="table table-hover w-100 text-center">
+            <tr class="col-md-12">
+                <th>Name</th>
+                <th>Sponsor</th>
+                <th>Expense</th>
+                <th>Contracts</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+
+            <!-- For loop -->
+            {% for campaign in campaigns %}
+            <tr class="col-md-12">
+                <td>
+                    <a href="{{ url_for('profile', id=campaign.id ) }}"
+                        >{{campaign.title[0:15]}}</a
+                    >
+                </td>
+                <td>{{campaign.sponsor_name}}</td>
+                <td>{{campaign.expenditure}}</td>
+                <td>{{campaign.influencer_count}}</td>
+                <td>{{campaign.date_posted.strftime('%d-%m-%Y')}}</td>
+                <td style="text-align: right !important">
+                    <a href="{{ url_for('flag_campaign', id=campaign.id) }}">
+                        {% if campaign.is_flagged %}
+                        <button class="btn btn-sm btn-success">Unflag</button>
+                        {% else %}
+                        <button class="btn btn-sm btn-warning">Flag</button>
+                        {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </div>
 <script

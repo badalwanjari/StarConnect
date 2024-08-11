@@ -28,12 +28,14 @@
                     <li
                         class="list-group-item d-flex gap-1 justify-content-center"
                     >
-                        <a href="{{ url_for('profile', id=sponsor.user_id ) }}">{{sponsor.sponsor_name}}</a>
+                        <a href="{{ url_for('profile', id=sponsor.user_id ) }}"
+                            >{{sponsor.sponsor_name}}</a
+                        >
                     </li>
                     <li
                         class="list-group-item d-flex gap-1 justify-content-center fs-5"
                     >
-                        <span class="badge bg-info">{{sponsor.industry}}</span>
+                        <span class="badge bg-info">{{campaign.category}}</span>
                         <span class="badge bg-success">active</span>
                     </li>
                     <li
@@ -41,7 +43,7 @@
                     >
                         <span class="text-muted">Budget:&nbsp;</span
                         ><span class="display-6" style="font-size: 1.36rem"
-                            >Rs. {{campaign.budget}}</span
+                            >₹ {{campaign.budget}}</span
                         >
                     </li>
                     <li
@@ -65,11 +67,18 @@
                     </li>
                 </ul>
                 {% if current_user.is_authenticated %}
-                <a
-                    href="{{ url_for('make_request', campaign_id=campaign.id, influencer_id=current_user.influencer.id ) }}"
-                    class="btn btn-primary"
-                    >Make Request</a
-                >
+                <form action="{{url_for('make_request', campaign_id=campaign.id, influencer_id=current_user.influencer.id )}}">
+                    <div class="d-flex gap-3 align-items-center">
+                        Negotiate
+                        <input
+                            class="form-control flex-1"
+                            type="number"
+                            name="budget"
+                            value="{{campaign.budget}}"
+                        />
+                        <button class="btn btn-primary">Make Request</button>
+                    </div>
+                </form>
                 {% endif %}
             </div>
         </div>

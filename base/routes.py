@@ -34,8 +34,8 @@ def role_required(*roles):
 
 ########################################33
 
-create_db(app, db)
-add_data(app, db)
+# create_db(app, db)
+# add_data(app, db)
 
 ###########################################
 ################UTILITY#####################
@@ -69,16 +69,14 @@ def home():
     campaigns = []
     query_campaigns = None
 
-    if current_user.is_authenticated and current_user.role == Role.SPONSOR:
+    if current_user.is_authenticated and current_user.role == Role.SPONSOR.value:
         query_campaigns = Campaign.query.filter_by(sponsor_id=current_user.sponsor.id).all()
     else:
         query_campaigns = Campaign.query.filter_by(is_disabled=False).all()
     
     for campaign in query_campaigns:
         image_file = url_for('static', filename='campaign_poster/' + campaign.image_file)
-        campaigns.append({"image": image_file,"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})
-
-    
+        campaigns.append({"image": image_file,"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})    
 
     return render_template('index.html', campaigns=campaigns)
 
@@ -87,22 +85,22 @@ def home():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         
         if (form.is_company.data == True):
-            user.role = Role.SPONSOR  
+            user.role = Role.SPONSOR.value
         else:
-            user.role = Role.INFLUENCER
+            user.role = Role.INFLUENCER.value
 
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
+        flash('Your account has been created! You are now able to login', 'success')
+        logout_user()
         return redirect(url_for('login'))
+    
     return render_template('auth/register.html', title='Register', form=form)
 
 
@@ -120,7 +118,7 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             if current_user.is_disabled:
-                if current_user.role == Role.INFLUENCER:
+                if current_user.role == Role.INFLUENCER.value:
                     return redirect(url_for('influencer_account_edit'))
                 else:
                     return redirect(url_for('sponsor_account_edit'))
@@ -143,7 +141,7 @@ def logout():
 
 
 @login_required
-@role_required(Role.INFLUENCER)
+@role_required(Role.INFLUENCER.value)
 @app.route("/influencer-account", methods=['GET', 'POST'])
 def influencer_account_edit():
     form = InfluencerRegistrationForm()
@@ -194,7 +192,7 @@ def influencer_account_edit():
 
 
 @login_required
-@role_required(Role.SPONSOR)
+@role_required(Role.SPONSOR.value)
 @app.route("/sponsor-account", methods=['GET', 'POST'])
 def sponsor_account_edit():
     form = SponsorRegistrationForm()
@@ -240,7 +238,7 @@ def sponsor_account_edit():
 
 
 @login_required
-@role_required(Role.INFLUENCER, Role.SPONSOR)
+@role_required(Role.INFLUENCER.value, Role.SPONSOR.value)
 @app.route("/account")
 def account():
     if current_user.role == Role.SPONSOR.value:
@@ -257,17 +255,17 @@ def account():
 
 
 @login_required
-@role_required(Role.INFLUENCER, Role.SPONSOR)
+@role_required(Role.INFLUENCER.value, Role.SPONSOR.value)
 @app.route("/profile/<id>")
 def profile(id):
     user = User.query.get(id)
     print(user.role)
-    if user and user.role == Role.SPONSOR.name:
+    if user and user.role == Role.SPONSOR.value:
         sponsor = Sponsor.query.get(user.sponsor.id)
         image_file = url_for('static', filename='profile_pics/' + sponsor.image_file)
         return render_template('visitors-account/sponsor.html', title='Profile', sponsor=sponsor,user=user, image_file=image_file)
     
-    if user and user.role == Role.INFLUENCER.name:
+    if user and user.role == Role.INFLUENCER.value:
         influencer = Influencer.query.get(user.influencer.id)
         image_file = url_for('static', filename='profile_pics/' + influencer.image_file)
         return render_template('visitors-account/influencer.html', title='Profile',influencer=influencer,user=user, image_file=image_file)
@@ -282,10 +280,12 @@ def profile(id):
 ###########################################
 
 @login_required
-@role_required(Role.SPONSOR)
+@role_required(Role.SPONSOR.value)
 @app.route("/create-campaign", methods=['GET', 'POST'])
 def create_campaign():
+
     form = CampaignRegistrationForm()
+
     if form.validate_on_submit():
         campaign = Campaign(
             sponsor_id=current_user.sponsor.id,
@@ -295,8 +295,10 @@ def create_campaign():
             target_audience=form.target_audience.data,
             start_date=form.start_date.data,
             end_date=form.end_date.data,
-            is_disabled=form.is_disabled.data
+            is_disabled=form.is_disabled.data,
+            category=form.category.data
         )
+
         if form.picture.data:
             picture_file = save_picture(form.picture.data, folder_name="campaign_poster")
             campaign.image_file = picture_file
@@ -315,7 +317,7 @@ def create_campaign():
 
 
 @login_required
-@role_required(Role.SPONSOR)
+@role_required(Role.SPONSOR.value)
 @app.route("/edit-campaign/<campaign_id>", methods=['GET', 'POST'])
 def edit_campaign(campaign_id):
 
@@ -369,8 +371,10 @@ def edit_campaign(campaign_id):
             deleted_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
             continue
         campaign_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
-        
-    return render_template('edit-campaign.html', title='About', form=form, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
+    
+    influencers = Influencer.query.all();
+    
+    return render_template('edit-campaign.html', title='About', form=form,campaign=campaign, influencers=influencers, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
 
 
 
@@ -381,15 +385,23 @@ def edit_campaign(campaign_id):
 
 
 @login_required
-@role_required(Role.INFLUENCER)
+@role_required(Role.INFLUENCER.value, Role.SPONSOR.value)
 @app.route("/make-request/<campaign_id>/<influencer_id>", methods=['GET'])
 def make_request(campaign_id, influencer_id):
     campaign = Campaign.query.filter_by(id=campaign_id).first()
     req = CampaignRequest.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
+    
+    budget = request.args.get('budget') 
+    by_sponsor = True if request.args.get('bysponsor') == 'true' else False
+
+    print(budget, request.args.get('bysponsor') == 'true')
+
     if req is None and not campaign.is_disabled:
-        req = CampaignRequest(campaign_id=campaign_id, influencer_id=influencer_id, budget=campaign.budget)
+        req = CampaignRequest(campaign_id=campaign_id, sponsor_id=campaign.sponsor_id, influencer_id=influencer_id, budget=budget, by_influencer=(not by_sponsor))
         db.session.add(req)
-        db.session.commit()
+    elif req is not None:
+        req.by_influencer = not by_sponsor
+        req.budget = budget
     else:
         contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
         if contract is None:
@@ -397,13 +409,15 @@ def make_request(campaign_id, influencer_id):
         else:
             flash("Already Accepted", "success")
     ref = request.referrer
+    
+    db.session.commit()
     return redirect(ref)
 
 
 
 
 @login_required
-@role_required(Role.SPONSOR)
+@role_required(Role.SPONSOR.value)
 @app.route("/delete-request/<campaign_id>/<influencer_id>", methods=['GET'])
 def delete_request(campaign_id, influencer_id):
     req = CampaignRequest.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
@@ -418,7 +432,6 @@ def delete_request(campaign_id, influencer_id):
 
 
 @login_required
-@role_required(Role.SPONSOR)
 @app.route("/make-contract/<campaign_id>/<campaign_request_id>", methods=['GET'])
 def make_contract(campaign_id, campaign_request_id):
  
@@ -428,12 +441,12 @@ def make_contract(campaign_id, campaign_request_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer.id, is_deleted=False).first()
 
     if contract is None and not campaign.is_disabled:
-        contract = Contract(campaign_id=campaign_id,sponsor_id=campaign.sponsor_id, influencer_id=influencer.id, reach=influencer.reach, budget=campaign.budget)
+        contract = Contract(campaign_id=campaign_id,sponsor_id=campaign.sponsor_id, influencer_id=influencer.id, reach=influencer.reach, budget=campaign_request.budget)
         db.session.add(contract)
         db.session.delete(campaign_request)
         db.session.commit()
     else:
-        flash("Campaign is already subscribed by!", "warning")
+        flash("You have already Subscribed to this campaign!", "warning")
 
     ref = request.referrer
     return redirect(ref)
@@ -441,7 +454,7 @@ def make_contract(campaign_id, campaign_request_id):
 
 
 @login_required
-@role_required(Role.SPONSOR)
+@role_required(Role.SPONSOR.value)
 @app.route("/delete-contract/<campaign_id>/<influencer_id>", methods=['GET'])
 def delete_contract(campaign_id, influencer_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
@@ -457,7 +470,7 @@ def delete_contract(campaign_id, influencer_id):
 
 
 @login_required
-@role_required(Role.INFLUENCER)
+@role_required(Role.INFLUENCER.value)
 @app.route("/my-campaigns")
 def my_contracts():
     contracts = (
@@ -489,3 +502,12 @@ def my_contracts():
             .all())
     
     return render_template('my-contracts.html', contracts=contracts, reqs=reqs)
+
+
+
+@app.route("/influencers")
+def find_influencers():
+    influencers = (
+        Influencer.query.all()
+    )
+    return render_template("find_influencers.html", influencers=influencers)

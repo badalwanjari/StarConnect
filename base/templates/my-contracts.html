@@ -1,9 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}
-My Compaigns
-{% endblock %}
-{% block blog %}
+{% extends 'base.html' %} {% block title %} My Compaigns {% endblock %} {% block
+blog %}
 
 <style>
     td,
@@ -31,7 +27,7 @@ My Compaigns
         {% for contract in contracts %}
         <tr class="col-md-12">
             <td>{{contract.title}}</td>
-            <td>{{contract.budget}}</td>
+            <td>₹{{contract.budget}}</td>
             <td>{{contract.start_date.strftime('%d-%m-%Y')}}</td>
             <td>{{contract.end_date.strftime('%d-%m-%Y')}}</td>
             <td style="max-width: 600px">{{contract.description}}</td>
@@ -50,28 +46,72 @@ My Compaigns
     <table class="table table-hover w-100 text-center">
         <tr class="col-md-12">
             <th>Title</th>
-            <th>Budget</th>
+            <th>Actual</th>
+            <th>Negotiated</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Description</th>
         </tr>
 
         <!-- For loop -->
-        {% for contract in reqs %}
+        {% for contract in reqs %} {% if contract[0].by_influencer %}
         <tr class="col-md-12">
             <td>{{contract.title}}</td>
-            <td>{{contract.budget}}</td>
+            <td>₹{{contract.budget}}</td>
+            <td>₹{{contract[0].budget}}</td>
             <td>{{contract.start_date.strftime('%d-%m-%Y')}}</td>
             <td>{{contract.end_date.strftime('%d-%m-%Y')}}</td>
             <td style="max-width: 600px">{{contract.description}}</td>
             <td class="" style="text-align: right !important">
-                <a href="{{ url_for('delete_request', campaign_id=contract.campaign_id, influencer_id=contract.influencer_id ) }}">
+                <a
+                    href="{{ url_for('delete_request', campaign_id=contract.campaign_id, influencer_id=contract.influencer_id ) }}"
+                >
                     <button class="btn btn-sm btn-danger">Delete</button>
                 </a>
             </td>
         </tr>
+        {% endif %} {% endfor %}
+    </table>
+</div>
 
-        {% endfor %}
+<div
+    class="mb-5 mx-auto p-3 w-75"
+    style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+>
+    <h3 class="my-3">Requests by Sponsors</h3>
+    <table class="table table-hover w-100 text-center">
+        <tr class="col-md-12">
+            <th>Title</th>
+            <th>Actual</th>
+            <th>Negotiated</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Description</th>
+        </tr>
+
+        <!-- For loop -->
+        {% for contract in reqs %} {% if not contract[0].by_influencer %}
+        <tr class="col-md-12">
+            <td>{{contract.title}}</td>
+            <td>₹{{contract.budget}}</td>
+            <td>₹{{contract[0].budget}}</td>
+            <td>{{contract.start_date.strftime('%d-%m-%Y')}}</td>
+            <td>{{contract.end_date.strftime('%d-%m-%Y')}}</td>
+            <td style="max-width: 600px">{{contract.description}}</td>
+            <td class="" style="text-align: right !important">
+                <a
+                    href="{{ url_for('delete_request', campaign_id=contract.campaign_id, influencer_id=contract.influencer_id ) }}"
+                >
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </a>
+                <a
+                    href="{{ url_for('make_contract', campaign_id=contract.campaign_id, campaign_request_id=current_user.influencer.id) }}"
+                >
+                    <button class="btn btn-sm btn-success">Accept</button>
+                </a>
+            </td>
+        </tr>
+        {% endif %} {% endfor %}
     </table>
 </div>
 

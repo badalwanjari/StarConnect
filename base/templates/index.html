@@ -79,7 +79,7 @@ Home
                 <li
                     class="list-group-item d-flex gap-1 justify-content-center fs-5"
                 >
-                    <span class="badge bg-info">{{sponsor.industry}}</span>
+                    <span class="badge bg-info">{{campaign.category}}</span>
                     {% if campaign.is_disabled %}
                     <span class="badge bg-warning">inactive</span>
                     {% else %}
@@ -93,7 +93,7 @@ Home
                 >
                     <span class="text-muted">Budget:&nbsp;</span
                     ><span class="display-6" style="font-size: 1.36rem"
-                        >Rs. {{campaign.budget}}</span
+                        > ₹{{campaign.budget}}</span
                     >
                 </li>
                 <li class="list-group-item d-flex gap-1 justify-content-center">

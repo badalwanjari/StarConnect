@@ -8,10 +8,15 @@ Stats
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <div class="my-5">
+        <p class="display-6">Total : ₹ {{additional.total}}</p>
+        <p class="display-6">Average : ₹ {{additional.average}}</p>
+    </div>
+
     <div class="container w-75 mx-auto">
-        
+    
         <div class="mb-5">
-            <h1 class="display-3">Campaign Statistics</h1>
+            <h1 class="display-3">Contracts Statistics</h1>
             <canvas id="myBarChart"></canvas>
         </div>
         
@@ -29,8 +34,8 @@ Stats
             const data_bar = {
                 labels: labels,
                 datasets: [{
-                    label: 'Number of Campaigns',
-                    data: counts,
+                    label: 'Budget',
+                    data: budget,
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
@@ -72,7 +77,7 @@ Stats
                 labels: labels,
                 datasets: [{
                     label: 'Budget Distribution',
-                    data: budget,
+                    data: counts,
                     backgroundColor: colors,
                     borderColor: borderColors,
                     borderWidth: 1,

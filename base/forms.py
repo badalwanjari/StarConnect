@@ -50,7 +50,7 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
-                        validators=[DataRequired(), Email()], render_kw={"placeholder": "Username or Email"})
+                        validators=[DataRequired(), Email()], render_kw={"placeholder": "Email"})
     password = PasswordField('Password', validators=[DataRequired()], render_kw={"placeholder": "Password"})
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
@@ -156,6 +156,7 @@ class CampaignRegistrationForm(FlaskForm):
     end_date = DateField("End date", validators=[DataRequired()])
     picture = FileField('Campaign Picture', validators=[FileAllowed(['jpg', 'png'])])
     is_disabled = BooleanField('Private?')
+    category = SelectField('Category',choices=CATEGORY_CHOICES, validators=[DataRequired()], render_kw={"placeholder": "Category"})
     submit = SubmitField('Update')
 
     # def validate_start_date(self, start_date):
@@ -165,3 +166,7 @@ class CampaignRegistrationForm(FlaskForm):
     def validate_end_date(self, end_date):
         if end_date.data and self.start_date.data and end_date.data <= self.start_date.data:
             raise ValidationError('End date must be after the start date.')
+        
+
+
+

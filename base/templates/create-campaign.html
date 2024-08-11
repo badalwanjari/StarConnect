@@ -60,6 +60,23 @@ Create Compaign
                 </div>
             </div>
 
+            <div class="mb-3">
+                <div class="form-group">
+                    {% if form.category.errors %} {{
+                    form.category(class="form-control
+                    is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.category.errors
+                        %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %} {{
+                    form.category(class="form-control") }} {%
+                    endif %}
+                </div>
+            </div>
+
             <div class="mb-3" style="text-align: left !important;">
                 {{ form.target_audience.label(class="form-control-label text-left pl-1", style="text-align: left;") }}
                 <div class="form-group">

@@ -1,8 +1,5 @@
-{% extends 'base.html' %} 
-{% block title %}
-Edit Compaign
-{% endblock %}
-{% block blog %}
+{% extends 'base.html' %} {% block title %} Edit Compaign {% endblock %} {%
+block blog %}
 <style>
     #myModal {
         display: none;
@@ -28,12 +25,20 @@ Edit Compaign
     }
 </style>
 
-<div class="h-100 my-4 gap-4 row" style="width: 80%;display: grid; grid-template-columns: 1fr 1fr;margin-inline: auto;">
+<div
+    class="h-100 my-4 gap-4 row"
+    style="
+        width: 80%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-inline: auto;
+    "
+>
     <div
         class="card w-100"
-        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-inline: auto;"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; margin-inline: auto"
     >
-        <div class="card-body p-5" >
+        <div class="card-body p-5">
             <h3 class="card-title">Campaign</h3>
             <form class="form" method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
@@ -151,8 +156,8 @@ Edit Compaign
 
                 <div class="mb-3">
                     <div class="form-check d-flex gap-2 justify-content-center">
-                        {{ form.is_disabled(class="form-check-input")}}
-                        {{ form.is_disabled.label(class="form-check-label")}}
+                        {{ form.is_disabled(class="form-check-input")}} {{
+                        form.is_disabled.label(class="form-check-label")}}
                     </div>
                 </div>
 
@@ -193,9 +198,7 @@ Edit Compaign
                             >{{item.influencer.influencer_name}}</a
                         >
                     </td>
-                    <td class="col-md-3">
-                        {{item.contract.budget}}
-                    </td>
+                    <td class="col-md-3">₹{{item.contract.budget}}</td>
                     <td class="col-md-3">
                         <a
                             href="{{ url_for('delete_contract', campaign_id=item.contract.campaign_id, influencer_id=item.contract.influencer_id) }}"
@@ -210,7 +213,6 @@ Edit Compaign
             </table>
         </div>
 
-
         <div
             class="card mb-2 py-5 p-3 w-100"
             style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
@@ -219,6 +221,7 @@ Edit Compaign
             <table class="table table-hover w-100">
                 <tr class="col-md-12">
                     <th class="col-md-6">Name</th>
+                    <th class="col-md-3 text-center">Asked</th>
                     <th class="col-md-3 text-center">Action</th>
                     <th class="col-md-3 text-center">Action</th>
                 </tr>
@@ -227,13 +230,19 @@ Edit Compaign
                 {% for item in campaign_reqs %}
 
                 <tr>
-                    <td class="col-md-6">
+                    <td>
                         <a
                             href="{{ url_for('profile', id=item.influencer.user_id) }}"
                             >{{item.influencer.influencer_name}}</a
                         >
                     </td>
-                    <td class="col-md-3">
+                    <td class="text-center">
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >₹{{item.request.budget}}</a
+                        >
+                    </td>
+                    <td>
                         <a
                             href="{{ url_for('make_contract', campaign_id=item.request.campaign_id, campaign_request_id=item.request.id) }}"
                         >
@@ -242,7 +251,7 @@ Edit Compaign
                             </button>
                         </a>
                     </td>
-                    <td class="col-md-3">
+                    <td>
                         <a
                             href="{{ url_for('delete_request', campaign_id=item.request.campaign_id, influencer_id=item.request.influencer_id) }}"
                         >
@@ -257,7 +266,6 @@ Edit Compaign
             </table>
         </div>
 
-
         <div
             class="card mb-2 py-5 p-3 w-100"
             style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
@@ -266,27 +274,79 @@ Edit Compaign
             <table class="table table-hover w-100">
                 <tr class="col-md-12">
                     <th class="col-md-6">Name</th>
-                    <th class="col-md-3 text-center">Total = {{deleted_contracts|length}}</th>
+                    <th class="col-md-3 text-center">
+                        Total = {{deleted_contracts|length}}
+                    </th>
                 </tr>
 
                 <!-- For loop -->
                 {% for item in deleted_contracts %}
-                    <tr>
+                <tr>
                     <td class="col-md-6">
                         <a
                             href="{{ url_for('profile', id=item.influencer.user_id) }}"
                             >{{item.influencer.influencer_name}}</a
                         >
                     </td>
-                    <td class="col-md-3">
-                        {{item.contract.budget}}
-                    </td>
+                    <td class="col-md-3">₹{{item.contract.budget}}</td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
 </div>
+
+<div class="m-5">
+    <div
+        class="card mb-2 p-3 w-100"
+        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+    >
+        <h3 class="card-title my-3">Influencers</h3>
+        <table class="table table-hover w-100">
+            <tr class="col-md-12">
+                <th class="">Name</th>
+                <th>Category</th>
+                <th>Reach</th>
+                <th>Negotiate</th>
+            </tr>
+
+            <!-- For loop -->
+            {% for influencer in influencers %}
+            <tr class="vertical-align: middle;">
+                <td class="">
+                    <a href="{{ url_for('profile', id=influencer.user_id) }}"
+                        >{{influencer.influencer_name}}</a
+                    >
+                </td>
+                <td class="">{{influencer.category}}</td>
+                <td class="">{{influencer.reach}}</td>
+                <td style="text-align: right !important">
+                    <form
+                        action="{{url_for('make_request', campaign_id=campaign.id, influencer_id=influencer.id )}}"
+                    >
+                        <div class="d-flex gap-3 align-items-center">
+                            <input
+                                type="text"
+                                name="bysponsor"
+                                value="true"
+                                hidden
+                            />
+                            ₹<input
+                                class="form-control flex-1"
+                                type="number"
+                                name="budget"
+                                value="{{campaign.budget}}"
+                            />
+                            <button class="btn btn-primary">Invite</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
 <script
     src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

@@ -61,6 +61,8 @@ class Influencer(db.Model):
 
 
 
+
+
 class Campaign(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     sponsor_id = db.Column(db.Integer, db.ForeignKey('sponsor.id'))
@@ -68,6 +70,7 @@ class Campaign(db.Model):
     description = db.Column(db.Text(), nullable=False)
     budget = db.Column(db.Integer, nullable=False)
     target_audience = db.Column(db.String(20))
+    category = db.Column(db.String(20))
     start_date = db.Column(db.Date(), nullable=False)
     end_date = db.Column(db.Date(), nullable=False)
     image_file = db.Column(db.String(50), nullable=False, default='default.jpg')
@@ -83,14 +86,22 @@ class Campaign(db.Model):
     
 
 
+
+
+
 class CampaignRequest(db.Model):
     __tablename__ = 'campaign_request'
  
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Ensure id is auto-increment
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'), nullable=False)
+    sponsor_id = db.Column(db.Integer, db.ForeignKey('sponsor.id'), nullable=False)
     influencer_id = db.Column(db.Integer, db.ForeignKey('influencer.id'), nullable=False)
     budget = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    by_influencer = db.Column(db.Boolean, default=True)
+
+
+
 
 
 class Contract(db.Model):

@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     is_disabled = db.Column(db.Boolean, default=True)
     is_banned = db.Column(db.Boolean, default=False)
     role = db.Column(db.String(), default="INFLUENCER")
+    
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.username}')"

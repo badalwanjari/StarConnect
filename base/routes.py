@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 import os
 import secrets
 from PIL import Image
@@ -12,14 +13,19 @@ from functools import wraps
 from flask import abort
 
 
-def role_required(role):
+class Role(Enum):
+    INFLUENCER = "INFLUENCER"
+    SPONSOR = "SPONSOR"
+    ADMIN = "ADMIN"
+
+
+def role_required(*roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not current_user.is_authenticated:
-                abort(403)  # or redirect to login page
-            if current_user.role != role:
-                abort(403)  # Forbidden
+            if current_user.role not in roles:
+                flash("You are not authorized!")
+                return redirect(url_for('/'))  
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -46,7 +52,6 @@ def save_picture(form_picture, folder_name):
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
-    print("SUCCESS\n", picture_path)
     return picture_fn
 
 
@@ -62,15 +67,21 @@ def home():
     campaigns = []
     query_campaigns = None
 
-    if current_user.is_authenticated and current_user.role == "SPONSOR":
-        query_campaigns = Campaign.query.filter_by(sponsor_id=current_user.sponsor.id)
+    if current_user.is_authenticated and current_user.role == Role.SPONSOR:
+        query_campaigns = Campaign.query.filter_by(sponsor_id=current_user.sponsor.id).all()
     else:
-        query_campaigns = Campaign.query.filter_by(is_disabled=False)
+        query_campaigns = Campaign.query.filter_by(is_disabled=False).all()
     
     for campaign in query_campaigns:
-        campaigns.append({"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})
-    print(campaigns)
+        image_file = url_for('static', filename='campaign_poster/' + campaign.image_file)
+        campaigns.append({"image": image_file,"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})
+
+    
+    
+
     return render_template('index.html', campaigns=campaigns)
+
+
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -83,15 +94,17 @@ def register():
         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         
         if (form.is_company.data == True):
-            user.role = "SPONSOR"  
+            user.role = Role.SPONSOR  
         else:
-            user.role = "INFLUENCER"
+            user.role = Role.INFLUENCER
 
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('login'))
     return render_template('auth/register.html', title='Register', form=form)
+
+
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -106,7 +119,7 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             if current_user.is_disabled:
-                if current_user.role == "INFLUENCER":
+                if current_user.role == Role.INFLUENCER:
                     return redirect(url_for('influencer_account_edit'))
                 else:
                     return redirect(url_for('sponsor_account_edit'))
@@ -117,6 +130,8 @@ def login():
     return render_template('auth/login.html', title='Login', form=form)
 
 
+
+
 @login_required
 @app.route("/logout")
 def logout():
@@ -124,8 +139,12 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/influencer-account", methods=['GET', 'POST'])
+
+
+
 @login_required
+@role_required(Role.INFLUENCER)
+@app.route("/influencer-account", methods=['GET', 'POST'])
 def influencer_account_edit():
     form = InfluencerRegistrationForm()
     if form.validate_on_submit():
@@ -174,8 +193,9 @@ def influencer_account_edit():
     return render_template('account/edit-profile.html', title='Account', form=form)
 
 
-@app.route("/sponsor-account", methods=['GET', 'POST'])
 @login_required
+@role_required(Role.SPONSOR)
+@app.route("/sponsor-account", methods=['GET', 'POST'])
 def sponsor_account_edit():
     form = SponsorRegistrationForm()
     if form.validate_on_submit():
@@ -219,33 +239,42 @@ def sponsor_account_edit():
 
 
 
-@app.route("/account")
 @login_required
+@role_required(Role.INFLUENCER, Role.SPONSOR)
+@app.route("/account")
 def account():
-    if current_user.role == "SPONSOR":
+    if current_user.role == Role.SPONSOR.value:
         image_file = url_for('static', filename='profile_pics/' + current_user.sponsor.image_file)
         return render_template('profile/sponsor-profile.html', title='Profile', image_file=image_file)
-    else :
+    
+    if current_user.role == Role.INFLUENCER.value:
         image_file = url_for('static', filename='profile_pics/' + current_user.influencer.image_file)
         return render_template('profile/influencer-profile.html', title='Profile', image_file=image_file)
+    
+    return "KUCH BHI MATCH NHI HUA"
 
 
 
 
-@app.route("/profile/<id>")
 @login_required
+@role_required(Role.INFLUENCER, Role.SPONSOR)
+@app.route("/profile/<id>")
 def profile(id):
     user = User.query.get(id)
     print(user.role)
-    if user and user.role == "SPONSOR":
+    if user and user.role == Role.SPONSOR.name:
         sponsor = Sponsor.query.get(user.sponsor.id)
         image_file = url_for('static', filename='profile_pics/' + sponsor.image_file)
         return render_template('visitors-account/sponsor.html', title='Profile', sponsor=sponsor,user=user, image_file=image_file)
     
-    if user and user.role == "INFLUENCER":
+    if user and user.role == Role.INFLUENCER.name:
         influencer = Influencer.query.get(user.influencer.id)
         image_file = url_for('static', filename='profile_pics/' + influencer.image_file)
         return render_template('visitors-account/influencer.html', title='Profile',influencer=influencer,user=user, image_file=image_file)
+
+
+
+
 
 
 
@@ -253,12 +282,10 @@ def profile(id):
 ################CAMPAIGN###################
 ###########################################
 
-
+@login_required
+@role_required(Role.SPONSOR)
 @app.route("/create-campaign", methods=['GET', 'POST'])
 def create_campaign():
-    if current_user.role != "SPONSOR":
-        return redirect(url_for('home'))
-    
     form = CampaignRegistrationForm()
     if form.validate_on_submit():
         campaign = Campaign(
@@ -285,10 +312,14 @@ def create_campaign():
     return render_template('create-campaign.html', title='About', form=form)
 
 
+
+
+
+@login_required
+@role_required(Role.SPONSOR)
 @app.route("/edit-campaign/<campaign_id>", methods=['GET', 'POST'])
 def edit_campaign(campaign_id):
-    if current_user.role != "SPONSOR":
-        return redirect(url_for('home'))
+
     form = CampaignRegistrationForm()
     campaign = Campaign.query.filter_by(id=campaign_id).first()
     
@@ -347,11 +378,13 @@ def edit_campaign(campaign_id):
 ###################################################################333
 ##############################REST API####################################
 #######################################################################
-@app.route("/make-request/<campaign_id>/<influencer_id>", methods=['GET'])
+
+
+
 @login_required
+@role_required(Role.INFLUENCER)
+@app.route("/make-request/<campaign_id>/<influencer_id>", methods=['GET'])
 def make_request(campaign_id, influencer_id):
-    if current_user.role == "SPONSOR":
-        return "Bad Request"
     campaign = Campaign.query.filter_by(id=campaign_id).first()
     req = CampaignRequest.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
     if req is None and not campaign.is_disabled:
@@ -370,8 +403,9 @@ def make_request(campaign_id, influencer_id):
 
 
 
-@app.route("/delete-request/<campaign_id>/<influencer_id>", methods=['GET'])
 @login_required
+@role_required(Role.SPONSOR)
+@app.route("/delete-request/<campaign_id>/<influencer_id>", methods=['GET'])
 def delete_request(campaign_id, influencer_id):
     req = CampaignRequest.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id).first()
     if req is not None:
@@ -386,12 +420,11 @@ def delete_request(campaign_id, influencer_id):
 
 
 
-@app.route("/make-contract/<campaign_id>/<campaign_request_id>", methods=['GET'])
 @login_required
+@role_required(Role.SPONSOR)
+@app.route("/make-contract/<campaign_id>/<campaign_request_id>", methods=['GET'])
 def make_contract(campaign_id, campaign_request_id):
-    if current_user.role == "INFLUENCER":
-        return "Bad Request"
-    
+ 
     campaign = Campaign.query.get(campaign_id)
     campaign_request = CampaignRequest.query.get(campaign_request_id)
     influencer = Influencer.query.get(campaign_request.influencer_id)
@@ -410,8 +443,9 @@ def make_contract(campaign_id, campaign_request_id):
 
 
 
-@app.route("/delete-contract/<campaign_id>/<influencer_id>", methods=['GET'])
 @login_required
+@role_required(Role.SPONSOR)
+@app.route("/delete-contract/<campaign_id>/<influencer_id>", methods=['GET'])
 def delete_contract(campaign_id, influencer_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
     print("Flag-1", contract.created_at)
@@ -429,8 +463,8 @@ def delete_contract(campaign_id, influencer_id):
 
 
 @login_required
+@role_required(Role.INFLUENCER)
 @app.route("/my-campaigns")
-@role_required("INFLUENCER")
 def my_contracts():
     contracts = (
         Contract.query
@@ -444,19 +478,5 @@ def my_contracts():
                          Campaign.title,
                          Contract.budget)
             .all())
+    
     return render_template('my-contracts.html', contracts=contracts)
-
-
-
-
-
-
-
-#################################################################33
-##################################################################33
-#                   STATSPAGE
-##################################################################
-#################################################################33
-
-
-

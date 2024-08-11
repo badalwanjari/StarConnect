@@ -34,8 +34,8 @@ def role_required(*roles):
 
 ########################################33
 
-# create_db(app, db)
-# add_data(app, db)
+create_db(app, db)
+add_data(app, db)
 
 ###########################################
 ################UTILITY#####################

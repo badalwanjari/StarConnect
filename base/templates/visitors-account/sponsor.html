@@ -1,4 +1,9 @@
-{% extends 'base.html' %} {% block blog %}
+{% extends 'base.html' %} 
+{% block title %}
+Account
+{% endblock %} 
+
+{% block blog %}
 <section class="container py-5">
     <div class="container pe-xl-0 ps-xl-0">
         <h1
@@ -39,7 +44,7 @@
                 {{ sponsor.sponsor_name }}
             </span>
         </h1>
-		<p><span class="badge bg-success fs-6">{{user.email}}</span></p>
+		<p><span class="badge bg-success fs-6">Sponsor</span></p>
         
         <br />
         <div class="d-flex w-75 my-3 justify-content-around"> 
@@ -49,6 +54,14 @@
 						Website
 					</label>
 					<p class="display-6"><a href="http://{{sponsor.website}}" target="_blank">{{sponsor.website[0:10]}}</a></p>
+				</div>
+			</div>
+            <div class="m-1">
+				<div class="mb-2">
+					<label class="text-muted">
+						Email
+					</label>
+					<p class="display-6"><a href="http://{{sponsor.website}}" target="_blank">{{user.email}}</a></p>
 				</div>
 			</div>
 			<div class="m-1">

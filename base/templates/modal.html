@@ -28,7 +28,7 @@
                     <li
                         class="list-group-item d-flex gap-1 justify-content-center"
                     >
-                        {{sponsor.sponsor_name}}
+                        <a href="{{ url_for('profile', id=sponsor.user_id ) }}">{{sponsor.sponsor_name}}</a>
                     </li>
                     <li
                         class="list-group-item d-flex gap-1 justify-content-center fs-5"

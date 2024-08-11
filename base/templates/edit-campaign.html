@@ -231,7 +231,7 @@ block blog %}
 
                 <!-- For loop -->
                 {% for item in campaign_reqs %}
-
+                {% if item.request.by_influencer == True %}
                 <tr>
                     <td>
                         <a
@@ -264,7 +264,50 @@ block blog %}
                         </a>
                     </td>
                 </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+        </div>
 
+        <div
+            class="card mb-2 py-5 p-3 w-100"
+            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        >
+            <h3 class="card-title">Invited</h3>
+            <table class="table table-hover w-100">
+                <tr class="col-md-12">
+                    <th class="col-md-6">Name</th>
+                    <th class="col-md-3 text-center">Asked</th>
+                    <th class="col-md-3 text-center">Action</th>
+                </tr>
+
+                <!-- For loop -->
+                {% for item in campaign_reqs %}
+                {% if item.request.by_influencer == False %}
+                <tr>
+                    <td>
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >{{item.influencer.influencer_name}}</a
+                        >
+                    </td>
+                    <td class="text-center">
+                        <a
+                            href="{{ url_for('profile', id=item.influencer.user_id) }}"
+                            >₹{{item.request.budget}}</a
+                        >
+                    </td>
+                    <td>
+                        <a
+                            href="{{ url_for('delete_request', campaign_id=item.request.campaign_id, influencer_id=item.request.influencer_id) }}"
+                        >
+                            <button class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>

@@ -58,9 +58,9 @@ def stats():
         })
 
     additional = {
-        "total" : total,
-        "average": total/n,
-        "n" : n
+        "total": total,
+        "average": total / n if n != 0 else 0, 
+        "n": n
     }
 
     # Extract data for chart

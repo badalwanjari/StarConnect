@@ -15,15 +15,15 @@ CATEGORY_CHOICES = (
         ('food', 'Food'),
         ('fitness', 'Fitness'),
         ('tech', 'Tech'),
-        ('gaming', 'Gaming'),
-        ('music', 'Music'),
-        ('lifestyle', 'Lifestyle'),
-        ('sports', 'Sports'),
-        ('finance', 'Finance'),
-        ('health', 'Health'),
-        ('education', 'Education'),
-        ('diy', 'DIY'),
-        ('photography', 'Photography')
+        # ('gaming', 'Gaming'),
+        # ('music', 'Music'),
+        # ('lifestyle', 'Lifestyle'),
+        # ('sports', 'Sports'),
+        # ('finance', 'Finance'),
+        # ('health', 'Health'),
+        # ('education', 'Education'),
+        # ('diy', 'DIY'),
+        # ('photography', 'Photography')
     )
 
 class RegistrationForm(FlaskForm):

@@ -4,16 +4,17 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <div class="container">
+    <div class="container w-75 mx-auto">
         
-        <h1 class="display-3">Campaign Statistics</h1>
-        <canvas id="myBarChart" width="600" height="300"></canvas>
-
-        <div class="mb-5" />
-
-        <h1 class="display-3">Budget Statistics</h1>
-        <canvas id="myPieChart" width="600" height="300"></canvas>
-
+        <div class="mb-5">
+            <h1 class="display-3">Campaign Statistics</h1>
+            <canvas id="myBarChart"></canvas>
+        </div>
+        
+        <div class="mb-5" style="height: 600px; padding: 40px 0px;">
+            <h1 class="display-3">Budget Statistics</h1>
+            <canvas id="myPieChart"></canvas>
+        </div>
 
         <script>
 
@@ -36,7 +37,7 @@
                 type: 'bar',
                 data: data_bar,
                 options: {
-                    indexAxis: 'y',
+                    // indexAxis: 'y',
                 }
             };
 

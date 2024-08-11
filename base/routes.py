@@ -418,8 +418,6 @@ def delete_request(campaign_id, influencer_id):
 
 
 
-
-
 @login_required
 @role_required(Role.SPONSOR)
 @app.route("/make-contract/<campaign_id>/<campaign_request_id>", methods=['GET'])
@@ -448,15 +446,12 @@ def make_contract(campaign_id, campaign_request_id):
 @app.route("/delete-contract/<campaign_id>/<influencer_id>", methods=['GET'])
 def delete_contract(campaign_id, influencer_id):
     contract = Contract.query.filter_by(campaign_id=campaign_id, influencer_id=influencer_id, is_deleted=False).first()
-    print("Flag-1", contract.created_at)
+    
     if contract is not None:
-        print("Flag-1 if")
         contract.is_deleted = True
         contract.deleted_at = datetime.now()
         db.session.commit()
-    else:
-        print("Flag-1 else")
-        flash("Cannot deleted")
+    
     ref = request.referrer
     return redirect(ref)
 
@@ -479,4 +474,19 @@ def my_contracts():
                          Contract.budget)
             .all())
     
-    return render_template('my-contracts.html', contracts=contracts)
+    reqs = (
+        CampaignRequest.query
+            .filter_by(
+                influencer_id = current_user.influencer.id
+                )
+            .join(Campaign, Campaign.id==CampaignRequest.campaign_id)
+            .add_columns(Campaign.description,
+                         Campaign.start_date,
+                         Campaign.end_date,
+                         Campaign.title,
+                         CampaignRequest.influencer_id,
+                         CampaignRequest.campaign_id,
+                         Campaign.budget)
+            .all())
+    
+    return render_template('my-contracts.html', contracts=contracts, reqs=reqs)

@@ -169,4 +169,7 @@ class CampaignRegistrationForm(FlaskForm):
         
 
 
-
+class FilterForm(FlaskForm):
+    q = StringField('q', render_kw={"placeholder": "Name"})
+    c = SelectField('c',choices=CATEGORY_CHOICES, render_kw={"placeholder": "Category"})
+    submit = SubmitField('Search')

@@ -23,6 +23,9 @@ block blog %}
         width: 80%;
         max-width: 600px;
     }
+    td{
+        vertical-align: middle !important;
+    }
 </style>
 
 <div
@@ -302,12 +305,22 @@ block blog %}
         style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px"
     >
         <h3 class="card-title my-3">Influencers</h3>
+        <form action="">
+            <div
+                class="my-3"
+                style="display: grid; grid-template-columns: 2fr 1fr 1fr"
+            >
+                {{ form2.q(class="form-control") }} {{
+                form2.c(class="form-control") }} {{ form2.submit(class="btn
+                btn-success")}}
+            </div>
+        </form>
         <table class="table table-hover w-100">
             <tr class="col-md-12">
                 <th class="">Name</th>
                 <th>Category</th>
                 <th>Reach</th>
-                <th>Negotiate</th>
+                <th class="text-center">Negotiate</th>
             </tr>
 
             <!-- For loop -->
@@ -320,11 +333,11 @@ block blog %}
                 </td>
                 <td class="">{{influencer.category}}</td>
                 <td class="">{{influencer.reach}}</td>
-                <td style="text-align: right !important">
+                <td style="text-align: right !important;">
                     <form
                         action="{{url_for('make_request', campaign_id=campaign.id, influencer_id=influencer.id )}}"
                     >
-                        <div class="d-flex gap-3 align-items-center">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
                             <input
                                 type="text"
                                 name="bysponsor"
@@ -332,10 +345,11 @@ block blog %}
                                 hidden
                             />
                             ₹<input
-                                class="form-control flex-1"
+                                class="form-control"
                                 type="number"
                                 name="budget"
                                 value="{{campaign.budget}}"
+                                width="300px"
                             />
                             <button class="btn btn-primary">Invite</button>
                         </div>

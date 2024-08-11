@@ -105,7 +105,7 @@ blog %}
                     <button class="btn btn-sm btn-danger">Delete</button>
                 </a>
                 <a
-                    href="{{ url_for('make_contract', campaign_id=contract.campaign_id, campaign_request_id=current_user.influencer.id) }}"
+                    href="{{ url_for('make_contract', campaign_id=contract.campaign_id, campaign_request_id=contract[0].id) }}"
                 >
                     <button class="btn btn-sm btn-success">Accept</button>
                 </a>

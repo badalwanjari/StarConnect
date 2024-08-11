@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block title %} Home {% endblock %} {% block blog %}
+
+<form>
+    <div class="my-3 d-flex" style="text-align: left !important">
+        {{ form.q(class="form-control") }} 
+        {{ form.c(class="form-control") }} {{
+        form.submit(class="btn btn-success")}}
+    </div>
+</form>
+
+{% endblock %}

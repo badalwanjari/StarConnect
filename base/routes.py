@@ -6,7 +6,7 @@ from PIL import Image
 from flask import jsonify, render_template, url_for, flash, redirect, request, abort
 from base import app, db, bcrypt
 from base.create_db import add_data, create_db
-from base.forms import CampaignRegistrationForm, RegistrationForm, LoginForm, InfluencerRegistrationForm, SponsorRegistrationForm
+from base.forms import CampaignRegistrationForm, FilterForm, RegistrationForm, LoginForm, InfluencerRegistrationForm, SponsorRegistrationForm
 from base.models import Campaign, Contract, Influencer, CampaignRequest, Sponsor, User
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
@@ -372,9 +372,20 @@ def edit_campaign(campaign_id):
             continue
         campaign_contracts.append({"influencer": Influencer.query.filter_by(id=contract.influencer_id).first(), "contract":contract})
     
-    influencers = Influencer.query.all();
+    form2 = FilterForm()
+
+    q = request.args.get('q')
+    c = request.args.get('c')
+
+    query = Influencer.query
+    if c and c!='category':
+        query = query.filter(Influencer.category == c)
+    if q and q!='':
+        query = query.filter(Influencer.influencer_name.ilike(f"%{q}%"))
+
+    influencers = query.all()
     
-    return render_template('edit-campaign.html', title='About', form=form,campaign=campaign, influencers=influencers, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
+    return render_template('edit-campaign.html', form2=form2, title='About', form=form,campaign=campaign, influencers=influencers, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
 
 
 
@@ -504,10 +515,21 @@ def my_contracts():
     return render_template('my-contracts.html', contracts=contracts, reqs=reqs)
 
 
-
 @app.route("/influencers")
 def find_influencers():
-    influencers = (
-        Influencer.query.all()
-    )
-    return render_template("find_influencers.html", influencers=influencers)
+    form = FilterForm()
+
+    q = request.args.get('q')
+    c = request.args.get('c')
+
+    # Build the query with None checks and 'or' condition
+    query = Influencer.query
+    if c and c!='category':
+        query = query.filter(Influencer.category == c)
+    if q and q!='':
+        query = query.filter(Influencer.influencer_name.ilike(f"%{q}%"))
+
+    influencers = query.all()
+
+
+    return render_template("find_influencers.html", form=form, influencers=influencers)

@@ -1,4 +1,9 @@
-{% extends 'base.html' %} {% block blog %}
+{% extends 'base.html' %} 
+{% block title %}
+Admin Home
+{% endblock %}
+
+{% block blog %}
 <style>
     #myModal {
         display: none;
@@ -60,7 +65,6 @@
                 <th>Email</th>
                 <th>Industry</th>
                 <th>Valuation</th>
-                <th>Contracts</th>
                 <th>Campaigns</th>
                 <th></th>
             </tr>
@@ -76,7 +80,6 @@
                 <td>{{sponsor.email}}</td>
                 <td>{{sponsor.industry}}</td>
                 <td>{{sponsor.market_valuation}}</td>
-                <td>{{sponsor.contract_count}}</td>
                 <td>{{sponsor.campaign_count}}</td>
 
                 <td class="" style="text-align: right !important">
@@ -152,11 +155,7 @@
             <!-- For loop -->
             {% for campaign in campaigns %}
             <tr class="col-md-12">
-                <td>
-                    <a href="{{ url_for('profile', id=campaign.id ) }}"
-                        >{{campaign.title[0:15]}}</a
-                    >
-                </td>
+                <td>{{campaign.title[0:15]}} ></td>
                 <td>{{campaign.sponsor_name}}</td>
                 <td>{{campaign.expenditure}}</td>
                 <td>{{campaign.influencer_count}}</td>

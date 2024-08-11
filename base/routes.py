@@ -10,7 +10,6 @@ from base.forms import CampaignRegistrationForm, RegistrationForm, LoginForm, In
 from base.models import Campaign, Contract, Influencer, CampaignRequest, Sponsor, User
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
-from flask import abort
 
 
 class Role(Enum):
@@ -23,9 +22,12 @@ def role_required(*roles):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash("Please Register or Login!", "warning")
+                return redirect(url_for('home'))
             if current_user.role not in roles:
-                flash("You are not authorized!")
-                return redirect(url_for('/'))  
+                flash("You are not authorized!", "warning")
+                return redirect(url_for('home'))  
             return f(*args, **kwargs)
         return decorated_function
     return decorator
@@ -76,7 +78,6 @@ def home():
         image_file = url_for('static', filename='campaign_poster/' + campaign.image_file)
         campaigns.append({"image": image_file,"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})
 
-    
     
 
     return render_template('index.html', campaigns=campaigns)
@@ -137,7 +138,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
 
 
 
@@ -251,7 +251,7 @@ def account():
         image_file = url_for('static', filename='profile_pics/' + current_user.influencer.image_file)
         return render_template('profile/influencer-profile.html', title='Profile', image_file=image_file)
     
-    return "KUCH BHI MATCH NHI HUA"
+    return redirect(url_for('home'))
 
 
 
@@ -271,7 +271,6 @@ def profile(id):
         influencer = Influencer.query.get(user.influencer.id)
         image_file = url_for('static', filename='profile_pics/' + influencer.image_file)
         return render_template('visitors-account/influencer.html', title='Profile',influencer=influencer,user=user, image_file=image_file)
-
 
 
 

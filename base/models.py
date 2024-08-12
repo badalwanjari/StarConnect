@@ -103,7 +103,6 @@ class CampaignRequest(db.Model):
 
 
 
-
 class Contract(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     campaign_id = db.Column(db.Integer, db.ForeignKey('campaign.id'))

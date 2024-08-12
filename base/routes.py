@@ -11,6 +11,8 @@ from base.models import Campaign, Contract, Influencer, CampaignRequest, Sponsor
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
 
+from base.utility import add_dummy_data
+
 
 class Role(Enum):
     INFLUENCER = "INFLUENCER"
@@ -34,8 +36,9 @@ def role_required(*roles):
 
 ########################################33
 
-create_db(app, db)
-add_data(app, db)
+# create_db(app, db)
+# add_data(app, db)
+# add_dummy_data(app, db)
 
 ###########################################
 ################UTILITY#####################
@@ -97,7 +100,7 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to login', 'success')
+        flash('Your account has been created! Please login to use this app', 'success')
         logout_user()
         return redirect(url_for('login'))
     
@@ -116,6 +119,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
+            if current_user.role == Role.ADMIN.value:
+                return redirect('/admin')
             next_page = request.args.get('next')
             if current_user.is_disabled:
                 if current_user.role == Role.INFLUENCER.value:
@@ -145,6 +150,7 @@ def logout():
 @app.route("/influencer-account", methods=['GET', 'POST'])
 def influencer_account_edit():
     form = InfluencerRegistrationForm()
+    print(form.validate_on_submit())
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
@@ -170,9 +176,10 @@ def influencer_account_edit():
             influencer.profile_url = form.profile_url.data
             influencer.bio = form.bio.data
 
+
         if form.picture.data:
             picture_file = save_picture(form.picture.data, "profile_pics")
-            current_user.image_file = picture_file
+            current_user.influencer.image_file = picture_file
 
         db.session.commit()
         flash('Your account has been updated!', 'success')
@@ -328,7 +335,9 @@ def edit_campaign(campaign_id):
         flash("SOMETHING WENT WRONG!!!", "danger")
         return redirect(url_for('home'))
 
-    if form.validate_on_submit():
+    print(request.method, form.validate_on_submit(), form.title.data)
+
+    if request.method == "POST":
         campaign.title=form.title.data
         campaign.description=form.description.data
         campaign.budget=form.budget.data
@@ -341,7 +350,6 @@ def edit_campaign(campaign_id):
             picture_file = save_picture(form.picture.data, folder_name="campaign_poster/")
             campaign.image_file = picture_file
 
-        db.session.add(campaign)
         db.session.commit()
 
         flash('Campaign has been updated!', 'success')
@@ -385,7 +393,7 @@ def edit_campaign(campaign_id):
 
     influencers = query.all()
     
-    return render_template('edit-campaign.html', form2=form2, title='About', form=form,campaign=campaign, influencers=influencers, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
+    return render_template('edit-campaign.html', form2=form2, title='About', form=form, campaign=campaign, influencers=influencers, campaign_reqs=campaign_reqs, campaign_contracts=campaign_contracts, expenditure=expenditure, deleted_contracts=deleted_contracts)
 
 
 

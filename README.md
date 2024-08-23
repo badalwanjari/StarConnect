@@ -36,8 +36,8 @@ StarConnect addresses the growing need for an efficient platform that brings tog
 
 - Create and activate a virtual environment:
 
-```python3 -m venv myenv
-myenv\Scripts\activate```
+```python3 -m venv myenv```
+```myenv\Scripts\activate```
 
 - Install the required dependencies:
 

@@ -74,4 +74,4 @@ python flask --app run.py run
 ![Flow diagram](https://github.com/badalwanjari/StarConnect/blob/master/flow.jpg?raw=true)
 
 ## ERD
-![Flow diagram](https://github.com/badalwanjari/StarConnect/blob/master/ERD.jpg?raw=true)
+![ERD diagram](https://github.com/badalwanjari/StarConnect/blob/master/ERD.png?raw=true)

@@ -7,6 +7,8 @@ StarConnect is a web-based platform designed to connect sponsors and influencers
 - Technologies Used
 - Installation
 - Usage
+- Flow
+- ERD
 
 ## Introduction
 StarConnect addresses the growing need for an efficient platform that brings together sponsors and influencers. By facilitating smooth communication and negotiation, it ensures that sponsors can effectively promote their products, while influencers can benefit monetarily.
@@ -70,3 +72,6 @@ python flask --app run.py run
 
 ## Flow of the app
 ![Flow diagram](https://github.com/badalwanjari/StarConnect/blob/master/flow.jpg?raw=true)
+
+## ERD
+![Flow diagram](https://github.com/badalwanjari/StarConnect/blob/master/ERD.jpg?raw=true)

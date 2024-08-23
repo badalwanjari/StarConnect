@@ -11,7 +11,6 @@ from base.models import Campaign, Contract, Influencer, CampaignRequest, Sponsor
 from flask_login import login_user, current_user, logout_user, login_required
 from functools import wraps
 
-from base.utility import add_dummy_data
 
 
 class Role(Enum):
@@ -36,9 +35,8 @@ def role_required(*roles):
 
 ########################################33
 
-# create_db(app, db)
+create_db(app, db)
 # add_data(app, db)
-# add_dummy_data(app, db)
 
 ###########################################
 ################UTILITY#####################
@@ -76,7 +74,9 @@ def home():
         query_campaigns = Campaign.query.filter_by(sponsor_id=current_user.sponsor.id).all()
     else:
         query_campaigns = Campaign.query.filter_by(is_disabled=False).all()
-    
+
+    query_campaigns.reverse()
+
     for campaign in query_campaigns:
         image_file = url_for('static', filename='campaign_poster/' + campaign.image_file)
         campaigns.append({"image": image_file,"campaign": campaign, "sponsor": Sponsor.query.filter_by(id=campaign.sponsor_id).first()})    

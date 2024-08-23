@@ -28,24 +28,39 @@ StarConnect addresses the growing need for an efficient platform that brings tog
 
 - Clone the repository:
 
-```git clone https://github.com/your-username/starconnect.git```
+```sh
+git clone https://github.com/your-username/starconnect.git
+```
 
 - Navigate in the project directory/folder
 
-```cd starconnect```
+```sh
+cd starconnect
+```
 
 - Create and activate a virtual environment:
 
-```python3 -m venv myenv```
-```myenv\Scripts\activate```
+```sh
+python3 -m venv myenv
+.\myenv\Scripts\activate
+```
+
 
 - Install the required dependencies:
 
-```pip install -r requirements.txt```
+```sh
+pip install -r requirements.txt
+```
 
 - Run the application:
   
-```python run.py```
+```
+python run.py
+```
+or
+```
+python flask --app run.py run
+```
 
 
 Usage

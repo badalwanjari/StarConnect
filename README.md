@@ -63,7 +63,10 @@ python flask --app run.py run
 ```
 
 
-Usage
+## Usage
 1. Admin: Monitor users and campaigns, flag inappropriate content.
 2. Sponsors: Create and manage campaigns, search for influencers, send ad requests.
 3. Influencers: Search for public campaigns, accept/reject ad requests, negotiate terms.
+
+## Flow of the app
+![Flow diagram](https://github.com/badalwanjari/StarConnect/blob/master/flow.jpg?raw=true)

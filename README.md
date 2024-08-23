@@ -30,21 +30,22 @@ StarConnect addresses the growing need for an efficient platform that brings tog
 
 ``git clone https://github.com/your-username/starconnect.git``
 
-cd starconnect
-Create and activate a virtual environment:
-bash
-Copy code
-python3 -m venv myenv
-source myenv/bin/activate  # On Windows: myenv\Scripts\activate
-Install the required dependencies:
-bash
-Copy code
-pip install -r requirements.txt
-Run the application:
-bash
-Copy code
-python run.py
+- Navigate in the project directory/folder
+``cd starconnect``
+
+- Create and activate a virtual environment:
+``python3 -m venv myenv``
+
+``source myenv/bin/activate  # On Windows: myenv\Scripts\activate``
+
+- Install the required dependencies:
+``pip install -r requirements.txt``
+
+- Run the application:
+``python run.py``
+
+
 Usage
-Admin: Monitor users and campaigns, flag inappropriate content.
-Sponsors: Create and manage campaigns, search for influencers, send ad requests.
-Influencers: Search for public campaigns, accept/reject ad requests, negotiate terms.
+1. Admin: Monitor users and campaigns, flag inappropriate content.
+2. Sponsors: Create and manage campaigns, search for influencers, send ad requests.
+3. Influencers: Search for public campaigns, accept/reject ad requests, negotiate terms.

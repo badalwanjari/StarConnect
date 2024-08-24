@@ -1,4 +1,5 @@
-# 🔥 StarConnect ```[Live Link](https://badalwanjari.pythonanywhere.com/)```🔥
+# 🔥 StarConnect 🔥
+```[Live Link](https://badalwanjari.pythonanywhere.com/)```
 StarConnect is a web-based platform designed to connect sponsors and influencers for effective collaboration on advertising campaigns. The platform enables sponsors to create campaigns and reach out to influencers for promoting their products or services. Influencers can accept or negotiate ad requests based on their preferences, making it a streamlined process for both parties.
 
 ## Table of Contents
